@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS transactions(id INTEGER PRIMARY KEY AUTOINCREMENT, ty
 CREATE TABLE IF NOT EXISTS reviews(id INTEGER PRIMARY KEY AUTOINCREMENT, order_id INTEGER UNIQUE, customer TEXT, rating INTEGER, comment TEXT DEFAULT '', created_at INTEGER);
 CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT);`);
 try { db.exec('ALTER TABLE orders ADD COLUMN fulfil TEXT'); } catch {}
+try { db.exec("INSERT INTO settings(key,value) VALUES('_t','1') ON CONFLICT(key) DO UPDATE SET value='1'"); console.log('DB tulis OK:', DB_FILE); } catch (e) { console.error('DB tulis GAGAL:', DB_FILE, e.message); }
 const all = (s, ...a) => db.prepare(s).all(...a), get = (s, ...a) => db.prepare(s).get(...a), run = (s, ...a) => db.prepare(s).run(...a);
 if (!get('SELECT id FROM categories')) for (const c of ['Gelang', 'Kalung', 'Cincin', 'Anting']) run('INSERT INTO categories(name) VALUES(?)', c);
 const setting = k => get('SELECT value FROM settings WHERE key=?', k)?.value;
