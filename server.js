@@ -2,7 +2,11 @@ process.env.TZ = process.env.TZ || 'Asia/Makassar';
 const os = require('os'), http = require('http'), fs = require('fs'), path = require('path'), crypto = require('crypto');
 const { DatabaseSync } = require('node:sqlite');
 const PORT = process.env.PORT || 3000, PASS = process.env.ADMIN_PASSWORD || 'admin123', SHOP = process.env.SHOP_NAME || 'Toko Aksesoris';
-const db = new DatabaseSync(path.join(__dirname, 'toko.db'));
+const DATA_DIR = process.env.DATA_DIR || '/tmp/data';
+fs.mkdirSync(DATA_DIR, { recursive: true });
+const DB_FILE = path.join(DATA_DIR, 'toko.db');
+if (!fs.existsSync(DB_FILE) && fs.existsSync(path.join(__dirname, 'toko.db'))) fs.copyFileSync(path.join(__dirname, 'toko.db'), DB_FILE);
+const db = new DatabaseSync(DB_FILE);
 db.exec(`
 CREATE TABLE IF NOT EXISTS categories(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);
 CREATE TABLE IF NOT EXISTS products(id INTEGER PRIMARY KEY AUTOINCREMENT, category_id INTEGER, name TEXT, price INTEGER, description TEXT DEFAULT '', available INTEGER DEFAULT 1, ver INTEGER DEFAULT 0);
