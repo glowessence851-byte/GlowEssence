@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 3000, PASS = process.env.ADMIN_PASSWORD || 'adm
 const DATA_DIR = process.env.DATA_DIR || '/tmp/data';
 fs.mkdirSync(DATA_DIR, { recursive: true });
 const DB_FILE = path.join(DATA_DIR, 'toko.db');
-if (!fs.existsSync(DB_FILE) && fs.existsSync(path.join(__dirname, 'toko.db'))) fs.copyFileSync(path.join(__dirname, 'toko.db'), DB_FILE);
+if (!fs.existsSync(DB_FILE) && fs.existsSync(path.join(__dirname, 'toko.db'))) { fs.copyFileSync(path.join(__dirname, 'toko.db'), DB_FILE); fs.chmodSync(DB_FILE, 0o644); }
 const db = new DatabaseSync(DB_FILE);
 db.exec(`
 CREATE TABLE IF NOT EXISTS categories(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);
